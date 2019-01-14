@@ -1,5 +1,6 @@
 
 public class TennisGame1 implements TennisGame {
+    private final String[] SCORES_GAME = {"Love", "Fifteen", "Thirty", "Forty"};
 
     private int m_score1 = 0;
     private int m_score2 = 0;
@@ -20,30 +21,22 @@ public class TennisGame1 implements TennisGame {
 
     public String getScore() {
         String score = "";
-        int tempScore = 0;
         if (equality()) {
             score = scoreForEquality();
         } else if (advantage()) {
             score = scoreForAdvantage();
         } else {
-            score = standardCode(score);
+            score = standardCode();
         }
         return score;
     }
 
-    private final String[] SCORES_GAME = {"Love", "Fifteen", "Thirty", "Forty"};
-    private String standardCode(String score) {
-        int tempScore;
-
-        for (int i = 1; i < 3; i++) {
-            if (i == 1) tempScore = m_score1;
-            else {
-                score += "-";
-                tempScore = m_score2;
-            }
-            score += SCORES_GAME[tempScore];
-        }
-        return score;
+    private String standardCode() {
+        StringBuilder scoreBuilder = new StringBuilder();
+        scoreBuilder.append(SCORES_GAME[m_score1]);
+        scoreBuilder.append("-");
+        scoreBuilder.append(SCORES_GAME[m_score2]);
+        return scoreBuilder.toString();
     }
 
     private String scoreForAdvantage() {
