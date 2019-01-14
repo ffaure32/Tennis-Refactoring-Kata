@@ -1,22 +1,26 @@
 
 public class TennisGame1 implements TennisGame {
-    private final String[] SCORES_GAME = {"Love", "Fifteen", "Thirty", "Forty"};
 
-    private int m_score1 = 0;
-    private int m_score2 = 0;
-    private String player1Name;
-    private String player2Name;
+    public static final String WIN_PREFIX = "Win for ";
+    public static final String ADVANTAGE_PREFIX = "Advantage ";
+    private PlayerScore player1;
+    private PlayerScore player2;
 
     public TennisGame1(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        this.player1 = new PlayerScore(player1Name);
+        this.player2 = new PlayerScore(player2Name);
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        PlayerScore score = getPlayerScore(playerName);
+        score.addPoint();
+    }
+
+    private PlayerScore getPlayerScore(String playerName) {
+        if(playerName.equals(player1.name)) {
+            return player1;
+        }
+        return player2;
     }
 
     public String getScore() {
@@ -33,15 +37,15 @@ public class TennisGame1 implements TennisGame {
 
     private String standardCode() {
         StringBuilder scoreBuilder = new StringBuilder();
-        scoreBuilder.append(SCORES_GAME[m_score1]);
+        scoreBuilder.append(player1.getGameScore().standardScore());
         scoreBuilder.append("-");
-        scoreBuilder.append(SCORES_GAME[m_score2]);
+        scoreBuilder.append(player2.getGameScore().standardScore());
         return scoreBuilder.toString();
     }
 
     private String scoreForAdvantageOrWin() {
         StringBuilder score = new StringBuilder();
-        int minusResult = m_score1 - m_score2;
+        int minusResult = player1.getScoreIndex() - player2.getScoreIndex();
         score.append(getAdvantageOrWin(minusResult));
         score.append(getLeader(minusResult));
         return score.toString();
@@ -49,45 +53,30 @@ public class TennisGame1 implements TennisGame {
 
     private String getLeader(int minusResult) {
         if(minusResult>0) {
-            return "player1";
+            return player1.name;
         } else {
-            return "player2";
+            return player2.name;
         }
     }
 
     private String getAdvantageOrWin(int minusResult) {
         if(Math.abs(minusResult) >= 2) {
-            return "Win for ";
+            return WIN_PREFIX;
         } else {
-            return "Advantage ";
+            return ADVANTAGE_PREFIX;
         }
     }
 
     private boolean advantageOrWin() {
-        return m_score1 >= 4 || m_score2 >= 4;
+        return player1.advantageOrWin()
+                || player2.advantageOrWin();
     }
 
     private String scoreForEquality() {
-        String score;
-        switch (m_score1) {
-            case 0:
-                score = "Love-All";
-                break;
-            case 1:
-                score = "Fifteen-All";
-                break;
-            case 2:
-                score = "Thirty-All";
-                break;
-            default:
-                score = "Deuce";
-                break;
-
-        }
-        return score;
+        return player1.getGameScore().equalityScore();
     }
 
     private boolean equality() {
-        return m_score1 == m_score2;
+        return player1.getScoreIndex() == player2.getScoreIndex();
     }
 }
