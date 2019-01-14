@@ -20,11 +20,11 @@ public class TennisGame1 implements TennisGame {
     }
 
     public String getScore() {
-        String score = "";
+        String score;
         if (equality()) {
             score = scoreForEquality();
         } else if (advantageOrWin()) {
-            score = scoreForAdvantage();
+            score = scoreForAdvantageOrWin();
         } else {
             score = standardCode();
         }
@@ -39,20 +39,28 @@ public class TennisGame1 implements TennisGame {
         return scoreBuilder.toString();
     }
 
-    private String scoreForAdvantage() {
+    private String scoreForAdvantageOrWin() {
         StringBuilder score = new StringBuilder();
         int minusResult = m_score1 - m_score2;
-        if(Math.abs(minusResult) >= 2) {
-            score.append("Win for ");
-        } else {
-            score.append("Advantage ");
-        }
-        if(minusResult>0) {
-            score.append("player1");
-        } else {
-            score.append("player2");
-        }
+        score.append(getAdvantageOrWin(minusResult));
+        score.append(getLeader(minusResult));
         return score.toString();
+    }
+
+    private String getLeader(int minusResult) {
+        if(minusResult>0) {
+            return "player1";
+        } else {
+            return "player2";
+        }
+    }
+
+    private String getAdvantageOrWin(int minusResult) {
+        if(Math.abs(minusResult) >= 2) {
+            return "Win for ";
+        } else {
+            return "Advantage ";
+        }
     }
 
     private boolean advantageOrWin() {
