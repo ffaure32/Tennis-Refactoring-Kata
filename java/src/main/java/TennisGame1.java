@@ -23,7 +23,7 @@ public class TennisGame1 implements TennisGame {
         String score = "";
         if (equality()) {
             score = scoreForEquality();
-        } else if (advantage()) {
+        } else if (advantageOrWin()) {
             score = scoreForAdvantage();
         } else {
             score = standardCode();
@@ -40,16 +40,22 @@ public class TennisGame1 implements TennisGame {
     }
 
     private String scoreForAdvantage() {
-        String score;
+        StringBuilder score = new StringBuilder();
         int minusResult = m_score1 - m_score2;
-        if (minusResult == 1) score = "Advantage player1";
-        else if (minusResult == -1) score = "Advantage player2";
-        else if (minusResult >= 2) score = "Win for player1";
-        else score = "Win for player2";
-        return score;
+        if(Math.abs(minusResult) >= 2) {
+            score.append("Win for ");
+        } else {
+            score.append("Advantage ");
+        }
+        if(minusResult>0) {
+            score.append("player1");
+        } else {
+            score.append("player2");
+        }
+        return score.toString();
     }
 
-    private boolean advantage() {
+    private boolean advantageOrWin() {
         return m_score1 >= 4 || m_score2 >= 4;
     }
 
