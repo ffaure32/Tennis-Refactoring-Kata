@@ -4,10 +4,6 @@ public class TennisGame2 implements TennisGame {
     private int p1Point = 0;
     private int p2Point = 0;
 
-    public TennisGame2() {
-    }
-
-
     public String getScore() {
         String score = "";
         if (p1Point == p2Point) {

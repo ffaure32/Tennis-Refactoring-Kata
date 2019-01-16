@@ -6,19 +6,23 @@ public class TennisGame3 implements TennisGame {
     private PlayerScore score1;
     private PlayerScore score2;
 
-    public TennisGame3(String p1N, String p2N) {
-        this.score1 = new PlayerScore(p1N);
-        this.score2 = new PlayerScore(p2N);
+    public TennisGame3(String player1Name, String player2Name) {
+        this.score1 = new PlayerScore(player1Name);
+        this.score2 = new PlayerScore(player2Name);
     }
 
     public String getScore() {
+        ScoreStrategy strategy = findAppliableStrategy();
+        return strategy.score();
+    }
+
+    private ScoreStrategy findAppliableStrategy() {
         List<ScoreStrategy> strategies = strategies();
-        ScoreStrategy strategy = strategies
+        return strategies
                 .stream()
                 .filter(ScoreStrategy::appliable)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
-        return strategy.score();
     }
 
     private List<ScoreStrategy> strategies() {
@@ -31,11 +35,12 @@ public class TennisGame3 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if(playerName.equals(score1.name))
-            score1.addPoint();
-        else
-            score2.addPoint();
-
+        getPlayerScoreByName(playerName).addPoint();
     }
 
+    private PlayerScore getPlayerScoreByName(String playerName) {
+        if(playerName.equals(score1.name))
+            return score1;
+        return score2;
+    }
 }
